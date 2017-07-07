@@ -1,47 +1,63 @@
 package test;
 
-public class QueueTest {
+public class CircularQueueTest {
 
   public static void main(String[] args) {
     
     // a b c d e f g h i j k l m n
     Queue queue = new Queue();
-    for (char i = 'A'; i< 'N'; i++) {
+    
+    letsCheck(queue);
+    
+    for (char i = 'A'; i< 'G'; i++) {
       System.out.println("Inserting "+i+" in the queue...");
       queue.insert(i);
     }
     
-    System.out.println("After the inserts, size of the queue = "+queue.size);
-    System.out.println("Is the queue full? "+queue.isFull());
+    letsCheck(queue);
     
-    for (char i = 'A'; i< 'N'; i++) {
+    for (char i = 'A'; i< 'C'; i++) {
       System.out.println("Deleting from the queue...");
       System.out.println("Size of the remaining queue - "+queue.size);
       queue.remove();
     }
     
-    System.out.println("Is the queue empty? "+queue.isEmpty());
+    letsCheck(queue);
+    
+    for (char i = '1'; i< '6'; i++) {
+      System.out.println("Inserting "+i+" in the queue...");
+      queue.insert(i);
+    }
+    
+    letsCheck(queue);
+    
   }
   
   public static class Queue {
-    private static int limit = 10;
+    private static int limit = 5;
     private char[] queueArr = new char[limit];
     private int front = 0;
-    private int rear = -1;
+    private int rear = 0;
     private int size = 0;
     
     public void insert(char c) {
-      if (size == limit){
+      if (isFull()){
         System.out.println("Sorry, queue is full!");
       } else {
-        queueArr[++rear]=c;
-        size++;
+        if (rear == limit &&  front != 0){
+          rear = -1;
+          queueArr[++rear] = c;
+        } else {
+          queueArr[rear++]=c;
+          size++;
+        }
+            
         System.out.println("Insert successful!");
       }
     }
     
     public char remove() {
-      if (size != 0) {
+      if (!isEmpty()) {
         System.out.println("Element removed - "+queueArr[front]);
         size--;
         return queueArr[front++];
@@ -52,7 +68,7 @@ public class QueueTest {
     }
     
     public char peek() {
-      if (size != 0) {
+      if (!isEmpty()) {
         System.out.println("Element found - "+queueArr[front]);
         return queueArr[front];
       } else {
@@ -66,9 +82,20 @@ public class QueueTest {
     }
     
     public boolean isFull() {
-      return size==limit;
+      return (rear==limit && front==0) || (rear == front-1);
     }
     
+  }
+  
+  public static void letsCheck(Queue queue) {
+    System.out.println("\n---------------------------------------------------");
+    System.out.println("CheckPoint: let's check the parameters --");
+    System.out.println("FRONT :"+queue.front);
+    System.out.println("REAR  :"+(queue.rear-1));
+    System.out.println("SIZE  :"+queue.size);
+    System.out.println("EMPTY?:"+queue.isEmpty());
+    System.out.println("FULL? :"+queue.isFull());
+    System.out.println("---------------------------------------------------\n");
   }
 
 }
